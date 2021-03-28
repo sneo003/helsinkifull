@@ -4,9 +4,14 @@ const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 )
 const Statistic = ({ text, value, unit }) => {
-  console.log({text})
   return (
-    <div>{text} {value} {unit}</div>
+    <div>
+      <tr>
+        <td width='60px'>{text}</td>
+        <td>{value}</td>
+        <td>{unit}</td>
+      </tr>
+    </div>
   )
 }
 const Statistics = (props) => {
@@ -19,12 +24,14 @@ const Statistics = (props) => {
   }
   return (
     <div>
+      <table>
       <Statistic text="good" value ={props.good} unit=''/>
       <Statistic text="neutral" value ={props.neutral} unit=''/>
       <Statistic text="bad" value ={props.bad} unit=''/>
       <Statistic text="all" value ={props.total} unit=''/>
       <Statistic text="average" value ={(props.good-props.bad)/props.total || 0} unit=''/>
       <Statistic text="positive" value ={(props.good/props.total)*100 || 0} unit='%'/>
+      </table>
     </div>
   )
 }
