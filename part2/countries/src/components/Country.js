@@ -1,40 +1,41 @@
-import React from 'react'
+import React, { useState } from 'react'
+import Details from './Details'
 
-const Country = ({ value }) => {
+const Country = (props) => {
+    let value = props.value
+    const [ country, setCountry ] = useState({})
+    const [ showCountry, setShow ] = useState(true)
+
+    const addCountry = (index) => {
+        setCountry(value[index])
+        if (showCountry) {
+            setShow(!showCountry)
+        }
+    }
+    // console.log(country);
+    // console.log(showCountry);
+
+    const showCountryDetails = showCountry === false ? <Details country={country}/> : ''
+
     //return capital, language and flag if result is one country
     if (value.length === 1) {
         return (
-            <div>
-                <h2>{value[0].name}</h2>
-                <ul style={{ paddingLeft: 0 }}>
-                    <li style={{ listStyleType: 'none' }}>
-                        capital {value[0].capital}
-                    </li>
-                    <li style={{ listStyleType: 'none' }}>
-                        population {value[0].population}
-                    </li>
-                </ul>               
-                <h3>languages</h3>
-                <ul>
-                    {value[0].languages.map(lang =>
-                <li key={lang.name}>
-                    {lang.name}
-                </li>
-                )}
-                </ul>
-                <img width='120px' src={value[0].flag} alt={value[0].name}/>
-            </div>
+            <Details country={value[0]} />
         )
     } else {
         //return list of countries if more than one result
         return (
+            <div>
             <ul style={{ paddingLeft: 0 }}>
-                {value.map(country =>
+                {value.map((country, index) =>
                 <li style={{ listStyleType: 'none' }} key={country.name}>
-                    {country.name}
+                    {country.name} 
+                    <button id={index} onClick={() => addCountry(index)}>show</button>
                 </li>
                 )}
-            </ul> 
+            </ul>
+            {showCountryDetails}
+            </div>
         )
     }
 }
