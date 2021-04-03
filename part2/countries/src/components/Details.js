@@ -1,8 +1,10 @@
 import React from 'react'
+// import axios from 'axios'
 
-const Details = ({country}) => {
-    // const country = props.country
-    // console.log(country);
+const Details = (props) => {
+    const country = props.country
+    const weather = props.weather
+    // console.log(props);
     return (
         <div>
             <h2>{country.name}</h2>
@@ -14,7 +16,7 @@ const Details = ({country}) => {
                     population {country.population}
                 </li>
             </ul>               
-            <h3>languages</h3>
+            <h3>Spoken languages</h3>
             <ul>
                 {country.languages.map(lang =>
             <li key={lang.name}>
@@ -23,6 +25,9 @@ const Details = ({country}) => {
             )}
             </ul>
             <div><img height='100px' src={country.flag} alt={country.name}/></div>
+            <h3>Weather in {country.name}</h3>
+            <p>temperature: {weather.temp} Celcius</p>
+            <p>wind: {weather.wind} kmph</p>
         </div>
     )
 }
