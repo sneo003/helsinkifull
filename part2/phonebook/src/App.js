@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Person from './components/Person'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
@@ -9,7 +10,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ search, setSearch] = useState('')
-  
+  const [successMessage, setSuccessMessage] = useState('')
+
   useEffect(() => {
     personService
       .getAll()
@@ -32,6 +34,8 @@ const App = () => {
           .update(changePerson.id, changePerson)
           .then(newNumPerson => {
             setPersons(persons.map(person => person.name !== personObject.name ? person : newNumPerson))
+            setSuccessMessage(`Updated ${persontoDel.name}`)
+            setTimeout(() => setSuccessMessage(null), 5000)
             setNewName('')
             setNewNumber('')
           })
@@ -41,10 +45,13 @@ const App = () => {
         .create(personObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setSuccessMessage(`Added ${personObject.name}`)
+          setTimeout(() => setSuccessMessage(null), 5000)
           setNewName('')
           setNewNumber('')
         })
     }
+    
   }
 
   const delPerson = (id) => {
@@ -73,6 +80,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
       <Filter value={search} onchange={handleSearch} text='filter shown with '/>
       <h2>Add a new</h2>
       <PersonForm 
