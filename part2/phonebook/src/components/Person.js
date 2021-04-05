@@ -1,9 +1,21 @@
 import React from 'react'
 
-const Person = ({ name }) => {
+const Person = ({ persons, onclick }) => {
+    // console.log(props.persons);
     return (
-        <li style={{ listStyleType: 'none' }}>{name.name} {name.number}</li>
+        <ul style={{ paddingLeft: 0 }}>
+            {persons.map(person => 
+            <li style={{ listStyleType: 'none' }}
+            key={person.name}>
+                {person.name} {person.number}
+                <button 
+                id={person.id} 
+                onClick={() => onclick(person.id)}> 
+                delete 
+                </button>
+            </li>
+            )}
+        </ul>
     )
 }
-
 export default Person

@@ -16,7 +16,7 @@ const App = () => {
       .then(initalPerson => {
         setPersons(initalPerson)
       })
-  }, [])
+  }, [persons.length])
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -37,6 +37,16 @@ const App = () => {
     }
   }
 
+  const delPerson = (id) => {
+    if (window.confirm(`Do you really want to delete?`)) {
+      personService
+      .del(id)
+      .then(
+        setPersons(persons.filter(person => person.id !== id))
+      )
+    }
+  }
+
   const handleNameChange = (event) => {
     // console.log(event.target.value);
     setNewName(event.target.value)
@@ -48,23 +58,20 @@ const App = () => {
     setSearch(event.target.value)
   }
   const namesToShow = persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
-
+  
   return (
     <div>
       <h2>Phonebook</h2>
-        <Filter value={search} onchange={handleSearch} text='filter shown with '/>
-        <PersonForm 
-        onsubmit={addPerson} 
-        nameValue={newName}
-        nameOnchange={handleNameChange}
-        numValue={newNumber}
-        numOnchange={handleNumChange}/>
+      <Filter value={search} onchange={handleSearch} text='filter shown with '/>
+      <h2>Add a new</h2>
+      <PersonForm 
+      onsubmit={addPerson} 
+      nameValue={newName}
+      nameOnchange={handleNameChange}
+      numValue={newNumber}
+      numOnchange={handleNumChange}/>
       <h2>Numbers</h2> 
-      <ul style={{ paddingLeft: 0 }}>
-        {namesToShow.map(person =>
-        <Person key={person.id} name={person}/>
-        )}
-      </ul> 
+      <Person persons={namesToShow} onclick={delPerson}/>
     </div>
   )
 }
