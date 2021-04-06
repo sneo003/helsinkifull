@@ -6,11 +6,22 @@ import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
+  const sucessStyle = {
+    color: 'rgb(0, 160, 27)',
+    background: 'rgb(188, 250, 204)',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
   const [ persons, setPersons ] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ search, setSearch] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
+  const [ successMessage, setSuccessMessage ] = useState('')
+  const [ errorMessage, setErrorMessage ] = useState('')
+  const [ notificationStyle, setNStyle ] = useState(sucessStyle)
 
   useEffect(() => {
     personService
@@ -35,9 +46,18 @@ const App = () => {
           .then(newNumPerson => {
             setPersons(persons.map(person => person.name !== personObject.name ? person : newNumPerson))
             setSuccessMessage(`Updated ${persontoDel.name}`)
-            setTimeout(() => setSuccessMessage(null), 5000)
-            setNewName('')
-            setNewNumber('')
+          })
+          .catch(error => {
+            setErrorMessage(`Information of ${persontoDel.name} has already been removed from server`)
+            setNStyle({
+              color: 'rgb(219, 70, 70)',
+              background: 'rgb(255, 205, 193)',
+              fontSize: 20,
+              borderStyle: 'solid',
+              borderRadius: 5,
+              padding: 10,
+              marginBottom: 10
+            })
           })
       }
     } else {
@@ -46,12 +66,15 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setSuccessMessage(`Added ${personObject.name}`)
-          setTimeout(() => setSuccessMessage(null), 5000)
-          setNewName('')
-          setNewNumber('')
         })
     }
-    
+    setTimeout(() => {
+      setSuccessMessage(null)
+      setErrorMessage(null)
+    } , 5000)
+    setNStyle(sucessStyle)
+    setNewName('')
+    setNewNumber('')
   }
 
   const delPerson = (id) => {
@@ -59,10 +82,14 @@ const App = () => {
     if (window.confirm(`Delete ${persontoDel.name}?`)) {
       personService
       .del(id)
-      .then(
+      .then(() => {
         setPersons(persons.filter(person => person.id !== id))
-      )
+        setSuccessMessage(`Deleted ${persontoDel.name}`)
+      })
     }
+    setTimeout(() => {
+      setSuccessMessage(null)
+    } , 5000)
   }
 
   const handleNameChange = (event) => {
@@ -80,7 +107,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={successMessage || errorMessage} style={notificationStyle}/>
       <Filter value={search} onchange={handleSearch} text='filter shown with '/>
       <h2>Add a new</h2>
       <PersonForm 
