@@ -1,5 +1,5 @@
 {
-  "name": "phonebook",
+  "name": "phonebook_backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,11 +8,7 @@
     "dev": "nodemon index.js",
     "test": "\"echo \\\"Error: no test specified\\\" && exit 1\""
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/sneo003/helsinkifull/tree/part3-1"
-  },
-  "author": "sneo",
+  "author": "neo",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
