@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 var morgan = require('morgan')
+const cors = require('cors')
 
 morgan.token('json', function (req, res) {
     return JSON.stringify({
@@ -11,8 +12,10 @@ morgan.token('json', function (req, res) {
 
 morgan.token("custom", ":method :url :status :res[content-length] - :response-time ms :json")
 
+app.use(express.static('build'))
 app.use(express.json());
 app.use(morgan('custom'))
+app.use(cors())
 
 let persons = [
     {
@@ -36,6 +39,10 @@ let persons = [
         number: "39-23-6423122"
     }
 ]
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
 
 app.get('/info', (request, response) => {
     const personsLen = persons.length
