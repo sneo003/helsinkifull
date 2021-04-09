@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require('express');
 const app = express();
 var morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 morgan.token('json', function (req, res) {
     return JSON.stringify({
@@ -52,31 +54,25 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if(person) {
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-
-    response.status(204).end()
+    Person.findByIdAndDelete(request.params.id).then(person => {
+        response.json(person)
+    })
 })
 
 app.post('/api/persons/', (request, response) => {
-    const ranId = Math.floor(Math.random() * Math.floor(9999))
     const body = request.body
-    console.log(body);
 
     if (!body.name) {
         return response.status(400).json({
@@ -92,14 +88,14 @@ app.post('/api/persons/', (request, response) => {
         })
     }
 
-    const person = {
-        id: ranId,
+    const person = new Person({
         name: body.name,
         number: body.number,
-    }
-    persons = persons.concat(person)
+    })
 
-    response.json(person)
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
 
 const unknownEndpoint = (request, response) => {
